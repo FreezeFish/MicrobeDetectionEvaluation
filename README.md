@@ -9,7 +9,7 @@ Next-generation sequencing is changing researching methods of biological fields.
 
 ##Tools:
 install.sh: download the related files and install them. <br>
-run.sh: run three easy analysis example.
+run.sh: run three easy analysis examples.
 
 ##Contact
 Any question could be sent to the following e-mail:
