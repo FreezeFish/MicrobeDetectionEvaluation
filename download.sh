@@ -13,6 +13,13 @@ cd ..
 
 mkdir middle_data
 cd middle_data
-wget http://**
-tar **
+wget http://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?cmd=dload&run_list=ERR205979&format=fastq
+gunzip sra_data.fastq.gz
 cd ..
+
+mkdir large_data
+cd large_data
+wget http://
+gunzip
+cd ..
+
