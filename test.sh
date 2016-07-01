@@ -4,7 +4,11 @@
 #change the fa files to detect other calculation example
 echo "Using kraken to verify HiSeq_timing.fa"
 cd kraken/kraken-0.10.5-beta/kraken-software
+cat a.sh << EOF
 ./kraken --db ../minikraken_20141208 ../HiSeq_timing.fa 
+EOF
+chmod +x a.sh
+./a.sh  2>&1 | tee mylog.log
 cd ../../../
 
 #testing readscan
@@ -23,7 +27,12 @@ cd ../../
 #change the fasta files to detect other calculation example
 echo "Using cs-score to detect test.fasta"
 cd cs-score/CSCORE_DISTRIBUTION
-./cscore ./test.fasta
+cat a.sh << EOF
+/usr/bin/time -o logfile ./cscore ./test.fasta
+grep -o INVALID test.fasta.assign | wc -l 
+EOF
+chmod +x a.sh
+./a.sh  2>&1 | tee mylog.log
 cd ../../
 
 
