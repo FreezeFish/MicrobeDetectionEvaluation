@@ -1,5 +1,8 @@
 #run.sh
 
+
+
+
 #testing kraken
 #change the fa files to detect other calculation example
 echo "Using kraken to verify HiSeq_timing.fa"
