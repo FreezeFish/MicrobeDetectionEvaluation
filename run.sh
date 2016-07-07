@@ -51,6 +51,22 @@ echo "grep -o PROKARYOTE test.fasta.assign | wc -l "
 echo "wc -l test.fasta.assign" >> a.sh
 chmod +x a.sh
 /usr/bin/time -a -o time.log ./a.sh 2>&1 | tee result.log
+
+echo "print("100* > a.py
+tac result.log | sed -n 2p | awk '{print $1, ORS = ""}'>> a.py
+echo -e "/\c" >> a.py
+tac result.log | sed -n 1p | awk -F "[test]" '{print $1, ORS = ""}' >> a.py
+echo -e ")\c" >> a.py
+python a.py > log
+echo "%" >> log
+
+echo -e "The classified sequences occupy \c"
+cat log | awk  '{print $1, ORS=""}'
+echo " of total sequences."
+echo -e "The runnig duration of the cs-score is \c"
+head -n 1 time.log | awk -F "[user]" '{print $1, ORS=""}'
+echo "seconds."
+
 cd ../../
 
 
