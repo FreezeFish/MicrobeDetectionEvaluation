@@ -105,6 +105,7 @@ remove a.py
 done
 cd ../
 
+readscan_makeflow.pl search -h human_genome -p microbes -r results -T taxon ../benchmark/middle_data/middle_data.fastq
 cd results/middle_data
 touch ../readscan_results/result_middle_readscan.txt
 for x in 1,2,4,8
@@ -125,6 +126,7 @@ remove a.py
 done
 cd ../
 
+readscan_makeflow.pl search -h human_genome -p microbes -r results -T taxon ../benchmark/large_data/large_data.fastq
 cd results/large_data
 touch ../readscan_results/result_large_readscan.txt
 for x in 1,2,4,8
@@ -148,16 +150,16 @@ cd ../../
 
 
 #cs-score
-echo "Using cs-score to detect test.fasta"
+#cs-score doesn't apply multi-threads work pattern.
 cd cs-score/CSCORE_DISTRIBUTION
-echo "./cscore ./test.fasta" > a.sh
+echo "./cscore ../../benchmark/small_data/small_data.fastq" > a.sh
 echo "INVALID: "
-echo "grep -o INVALID test.fasta.assign | wc -l " >> a.sh
+echo "grep -o INVALID ../../benchmark/small_data/small_data.fastq.assign | wc -l " >> a.sh
 echo "HUMAN: "
-echo "grep -o HUMAN test.fasta.assign | wc -l "
+echo "grep -o HUMAN ../../benchmark/small_data/small_data.fastq.assign | wc -l "
 echo "PROKARYOTE: "
-echo "grep -o PROKARYOTE test.fasta.assign | wc -l "
-echo "wc -l test.fasta.assign" >> a.sh
+echo "grep -o PROKARYOTE ../../benchmark/small_data/small_data.fastq.fasta.assign | wc -l "
+echo "wc -l ../../benchmark/small_data/small_data.fastq.assign" >> a.sh
 chmod +x a.sh
 /usr/bin/time -a -o time.log ./a.sh 2>&1 | tee result.log
 echo "print("100* > a.py
@@ -165,12 +167,65 @@ tac result.log | sed -n 2p | awk '{print $1, ORS = ""}'>> a.py
 echo -e "/\c" >> a.py
 tac result.log | sed -n 1p | awk -F "[test]" '{print $1, ORS = ""}' >> a.py
 echo -e ")\c" >> a.py
-python a.py > log
-echo "%" >> log
-echo -e "The classified sequences occupy \c"
-cat log | awk  '{print $1, ORS=""}'
-echo " of total sequences."
-echo -e "The runnig duration of the cs-score is \c"
-head -n 1 time.log | awk -F "[user]" '{print $1, ORS=""}'
-echo "seconds."
+python a.py > result.log
+echo "%" >> result.log
+echo "cs-score: large_data.fastq" > cs-score_small_data.txt
+echo "accuracy:" >> cs-score_small_data.txt
+cat result.log | awk  '{print $1, ORS=""}' >> cs-score_small_data.txt
+echo "duration:" >> cs-score_small_data.txt
+head -n 1 time.log | awk -F "[user]" '{print $1, ORS=""}' >> cs-score_small_data.txt
+remove *.log
+remove a.py
+
+echo "./cscore ../../benchmark/middle_data/middle_data.fastq" > a.sh
+echo "INVALID: "
+echo "grep -o INVALID ../../benchmark/middle_data/middle_data.fastq.assign | wc -l " >> a.sh
+echo "HUMAN: "
+echo "grep -o HUMAN ../../benchmark/middle_data/middle_data.fastq.assign | wc -l "
+echo "PROKARYOTE: "
+echo "grep -o PROKARYOTE ../../benchmark/middle_data/middle_data.fastq.fasta.assign | wc -l "
+echo "wc -l ../../benchmark/middle_data/middle_data.fastq.assign" >> a.sh
+chmod +x a.sh
+/usr/bin/time -a -o time.log ./a.sh 2>&1 | tee result.log
+echo "print("100* > a.py
+tac result.log | sed -n 2p | awk '{print $1, ORS = ""}'>> a.py
+echo -e "/\c" >> a.py
+tac result.log | sed -n 1p | awk -F "[test]" '{print $1, ORS = ""}' >> a.py
+echo -e ")\c" >> a.py
+python a.py > result.log
+echo "%" >> result.log
+echo "cs-score: large_data.fastq" > cs-score_middle_data.txt
+echo "accuracy:" >> cs-score_middle_data.txt
+cat result.log | awk  '{print $1, ORS=""}' >> cs-score_middle_data.txt
+echo "duration:" >> cs-score_middle_data.txt
+head -n 1 time.log | awk -F "[user]" '{print $1, ORS=""}' >> cs-score_middle_data.txt
+remove *.log
+remove a.py
+
+echo "./cscore ../../benchmark/large_data/large_data.fastq" > a.sh
+echo "INVALID: "
+echo "grep -o INVALID ../../benchmark/large_data/large_data.fastq.assign | wc -l " >> a.sh
+echo "HUMAN: "
+echo "grep -o HUMAN ../../benchmark/large_data/large_data.fastq.assign | wc -l "
+echo "PROKARYOTE: "
+echo "grep -o PROKARYOTE ../../benchmark/large_data/large_data.fastq.fasta.assign | wc -l "
+echo "wc -l ../../benchmark/large_data/large_data.fastq.assign" >> a.sh
+chmod +x a.sh
+/usr/bin/time -a -o time.log ./a.sh 2>&1 | tee result.log
+echo "print("100* > a.py
+tac result.log | sed -n 2p | awk '{print $1, ORS = ""}'>> a.py
+echo -e "/\c" >> a.py
+tac result.log | sed -n 1p | awk -F "[test]" '{print $1, ORS = ""}' >> a.py
+echo -e ")\c" >> a.py
+python a.py > result.log
+echo "%" >> result.log
+echo "cs-score: large_data.fastq"> cs-score_large_data.txt
+echo "accuracy:">> cs-score_large_data.txt
+cat result.log | awk  '{print $1, ORS=""}'>> cs-score_large_data.txt
+echo "duration:">> cs-score_large_data.txt
+head -n 1 time.log | awk -F "[user]" '{print $1, ORS=""}'>> cs-score_large_data.txt
+remove *.log
+remove a.py
 cd ../../
+
+#Finish the runs
