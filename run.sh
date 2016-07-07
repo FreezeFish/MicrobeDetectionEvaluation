@@ -38,6 +38,19 @@ echo "duration:">> result_kraken_small.txt
 head -n 1 time1.log | awk -F "[user]" '{print $1, ORS=""}' >> result_kraken_small.txt
 remove *.log
 
+for x in 2 4 8
+do 
+  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../benchmark/small_data/small_data.fastq  2>&1 | tee result$x.log
+tac result$x.log | sed -n 2p >tail$x.log
+echo "kraken with threads $x:" >> result_kraken_small.txt
+echo "accuracy:">> >> result_kraken_small.txt
+cat tail$x.log | awk -F"[()]" '{print $2, ORS=""}'  >> result_kraken_small.txt
+echo "duration:">> result_kraken_small.txt
+head -n 1 time$x.log | awk -F "[user]" '{print $1, ORS=""}' >> result_kraken_small.txt
+remove *.log
+done
+
+:'
 /usr/bin/time -a -o time2.log ./kraken --db ../minikraken_20141208 --threads 2 ../benchmark/small_data/small_data.fastq  2>&1 | tee result2.log
 tac result2.log | sed -n 2p >tail2.log
 echo "kraken with threads 2:" >> result_kraken_small.txt
@@ -64,7 +77,7 @@ cat tail1.log | awk -F"[()]" '{print $2, ORS=""}'  >> result_kraken_small.txt
 echo "duration:">> result_kraken_small.txt
 head -n 1 time1.log | awk -F "[user]" '{print $1, ORS=""}'>> result_kraken_small.txt
 remove *.log
-
+'
 
 
 
