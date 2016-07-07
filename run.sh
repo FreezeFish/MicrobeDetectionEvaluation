@@ -1,4 +1,4 @@
-#This file is used to download the benchmark data
+#Download three benchmark data and use the pipelines to evaluate them
 mkdir benchmark
 cd benchmark
 
