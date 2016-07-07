@@ -26,6 +26,58 @@ cd ..
 
 #Use these pipelines to analyse the benchmark data.
 #kraken
+mkdir kraken/kraken_results
+touch kraken/kraken_results/result_kraken_small.txt
+echo "Using kraken to verify small_data.fastq"
+cd kraken/kraken-0.10.5-beta/kraken-software
+for x in 1 2 4 8
+do 
+  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../../../benchmark/small_data/small_data.fastq  2>&1 | tee result$x.log
+tac result$x.log | sed -n 2p >tail$x.log
+echo "kraken with threads $x:" >> ../../kraken_results/result_kraken_small.txt
+echo "accuracy:" >> ../../kraken_results/result_kraken_small.txt
+cat tail$x.log | awk -F"[()]" '{print $2, ORS=""}'  >> ../../kraken_results/result_kraken_small.txt
+echo "duration:">> ../../kraken_results/result_kraken_small.txt
+head -n 1 time$x.log | awk -F "[user]" '{print $1, ORS=""}' >> ../../kraken_results/result_kraken_small.txt
+remove *.log
+done
+
+echo "Using kraken to verify middle_data.fastq"
+cd kraken/kraken-0.10.5-beta/kraken-software
+for x in 1 2 4 8
+do 
+  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../../../benchmark/middle_data/middle_data.fastq  2>&1 | tee result$x.log
+tac result$x.log | sed -n 2p >tail$x.log
+echo "kraken with threads $x:" >> ../../kraken_results/result_kraken_middle.txt
+echo "accuracy:" >> ../../kraken_results/result_kraken_middle.txt
+cat tail$x.log | awk -F"[()]" '{print $2, ORS=""}'  >> ../../kraken_results/result_kraken_middle.txt
+echo "duration:">> ../../kraken_results/result_kraken_middle.txt
+head -n 1 time$x.log | awk -F "[user]" '{print $1, ORS=""}' >> ../../kraken_results/result_kraken_middle.txt
+remove *.log
+done
+
+echo "Using kraken to verify large_data.fastq"
+cd kraken/kraken-0.10.5-beta/kraken-software
+for x in 1 2 4 8
+do 
+  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../../../benchmark/large_data/large_data.fastq  2>&1 | tee result$x.log
+tac result$x.log | sed -n 2p >tail$x.log
+echo "kraken with threads $x:" >> ../../kraken_results/result_kraken_large.txt
+echo "accuracy:" >> ../../kraken_results/result_kraken_large.txt
+cat tail$x.log | awk -F"[()]" '{print $2, ORS=""}'  >> ../../kraken_results/result_kraken_large.txt
+echo "duration:">> ../../kraken_results/result_kraken_large.txt
+head -n 1 time$x.log | awk -F "[user]" '{print $1, ORS=""}' >> ../../kraken_results/result_kraken_large.txt
+remove *.log
+done
+
+echo "Kraken analysis completed."
+cd ../../../
+
+
+
+
+
+:'
 echo "Using kraken to verify small_data.fastq"
 cd kraken/kraken-0.10.5-beta/kraken-software
 /usr/bin/time -a -o time1.log ./kraken --db ../minikraken_20141208 --threads 1 ../benchmark/small_data/small_data.fastq  2>&1 | tee result1.log
@@ -38,19 +90,7 @@ echo "duration:">> result_kraken_small.txt
 head -n 1 time1.log | awk -F "[user]" '{print $1, ORS=""}' >> result_kraken_small.txt
 remove *.log
 
-for x in 2 4 8
-do 
-  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../benchmark/small_data/small_data.fastq  2>&1 | tee result$x.log
-tac result$x.log | sed -n 2p >tail$x.log
-echo "kraken with threads $x:" >> result_kraken_small.txt
-echo "accuracy:">> >> result_kraken_small.txt
-cat tail$x.log | awk -F"[()]" '{print $2, ORS=""}'  >> result_kraken_small.txt
-echo "duration:">> result_kraken_small.txt
-head -n 1 time$x.log | awk -F "[user]" '{print $1, ORS=""}' >> result_kraken_small.txt
-remove *.log
-done
 
-:'
 /usr/bin/time -a -o time2.log ./kraken --db ../minikraken_20141208 --threads 2 ../benchmark/small_data/small_data.fastq  2>&1 | tee result2.log
 tac result2.log | sed -n 2p >tail2.log
 echo "kraken with threads 2:" >> result_kraken_small.txt
@@ -87,7 +127,7 @@ remove *.log
 
 
 
-cd ../../../
+
 #testing readscan
 echo "Using readscan to detect simulation.fastq"
 cd readscan
