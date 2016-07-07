@@ -1,7 +1,6 @@
 #run.sh
 
 #running kraken
-#change the fa files to detect other calculation example
 echo "Using kraken to verify HiSeq_timing.fa"
 cd kraken/kraken-0.10.5-beta/kraken-software
 /usr/bin/time -a -o time.log ./kraken --db ../minikraken_20141208 ../HiSeq_timing.fa  2>&1 | tee result.log
@@ -15,7 +14,6 @@ echo "seconds."
 cd ../../../
 
 #testing readscan
-#change the fastq files to detect other calculation example
 echo "Using readscan to detect simulation.fastq"
 cd readscan
 . ./env.sh
@@ -38,7 +36,6 @@ echo "seconds."
 cd ../../
 
 #testing cs-score
-#change the fasta files to detect other calculation example
 echo "Using cs-score to detect test.fasta"
 cd cs-score/CSCORE_DISTRIBUTION
 echo "./cscore ./test.fasta" > a.sh
@@ -65,5 +62,3 @@ echo -e "The runnig duration of the cs-score is \c"
 head -n 1 time.log | awk -F "[user]" '{print $1, ORS=""}'
 echo "seconds."
 cd ../../
-
-
