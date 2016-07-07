@@ -10,6 +10,9 @@ Next-generation sequencing is changing researching methods of biological fields.
 ###Prerequisites
 .Linux OS, our tests are performed on CentOS release 6.5(server) and Ubuntu 15.10(Desktop)
 .Network required. This project will download a lot of related files(>34 Gb) online, please make sure your network is available.
+###Download and setup
+1.You can use the command line git clone https://github.com/FreezeFish/MicrobeDetectionEvaluation.git to download the project easily.
+2.Then you can cd into the MicrobeDetectionEvaluation dir and use the command line chmod +x *.sh, and ./install.sh to configure the detection environment.
 
 ##Tools:
 install.sh: download kraken, readscan and cs-score, install them and run three analysis examples. <br>
