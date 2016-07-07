@@ -75,81 +75,79 @@ cd ../../../
 
 
 
-
-
-:'
-echo "Using kraken to verify small_data.fastq"
-cd kraken/kraken-0.10.5-beta/kraken-software
-/usr/bin/time -a -o time1.log ./kraken --db ../minikraken_20141208 --threads 1 ../benchmark/small_data/small_data.fastq  2>&1 | tee result1.log
-tac result1.log | sed -n 2p >tail1.log
-echo "small_data.fastq" > result_kraken_small.txt
-echo "kraken with threads 1:" >> result_kraken_small.txt
-echo "accuracy:">> result_kraken_small.txt
-cat tail1.log | awk -F"[()]" '{print $2, ORS=""}'  >> result_kraken_small.txt
-echo "duration:">> result_kraken_small.txt
-head -n 1 time1.log | awk -F "[user]" '{print $1, ORS=""}' >> result_kraken_small.txt
-remove *.log
-
-
-/usr/bin/time -a -o time2.log ./kraken --db ../minikraken_20141208 --threads 2 ../benchmark/small_data/small_data.fastq  2>&1 | tee result2.log
-tac result2.log | sed -n 2p >tail2.log
-echo "kraken with threads 2:" >> result_kraken_small.txt
-echo "accuracy:">> >> result_kraken_small.txt
-cat tail2.log | awk -F"[()]" '{print $2, ORS=""}'  >> result_kraken_small.txt
-echo "duration:">> result_kraken_small.txt
-head -n 1 time2.log | awk -F "[user]" '{print $1, ORS=""}' >> result_kraken_small.txt
-remove *.log
-
-/usr/bin/time -a -o time4.log ./kraken --db ../minikraken_20141208 --threads 4 ../benchmark/small_data/small_data.fastq  2>&1 | tee result4.log
-tac result4.log | sed -n 2p >tail4.log
-echo "kraken with threads 4:" >> result_kraken_small.txt
-echo "accuracy:">> result_kraken_small.txt
-cat tail1.log | awk -F"[()]" '{print $2, ORS=""}'  >> result_kraken_small.txt
-echo "duration:">> result_kraken_small.txt
-head -n 1 time4.log | awk -F "[user]" '{print $1, ORS=""}' >> result_kraken_small.txt
-remove *.log
-
-/usr/bin/time -a -o time8.log ./kraken --db ../minikraken_20141208 --threads 8 ../benchmark/small_data/small_data.fastq  2>&1 | tee result8.log
-tac result1.log | sed -n 2p >tail8.log
-echo "kraken with threads 8:" >> result_kraken_small.txt
-echo "accuracy:">> result_kraken_small.txt
-cat tail1.log | awk -F"[()]" '{print $2, ORS=""}'  >> result_kraken_small.txt
-echo "duration:">> result_kraken_small.txt
-head -n 1 time1.log | awk -F "[user]" '{print $1, ORS=""}'>> result_kraken_small.txt
-remove *.log
-'
-
-
-
-
-
-
-
-
-
-
-#testing readscan
-echo "Using readscan to detect simulation.fastq"
+#readscan
+echo "Using readscan to detect small_data.fastq"
 cd readscan
 . ./env.sh
 readscan_makeflow.pl index -k 13 -s 13 human_genome.fasta
 readscan_makeflow.pl index -k 13 -s 6 microbes.fasta
-readscan_makeflow.pl search -h human_genome -p microbes -r results -T taxon simulation.fastq
-cd results/simulation
-/usr/bin/time -a -o time.log make -j2 2>&1 | tee result.log
+readscan_makeflow.pl search -h human_genome -p microbes -r results -T taxon ../benchmark/small_data/small_data.fastq
+
+mkdir readscan_results
+
+cd results/small_data
+touch ../readscan_results/result_small_readscan.txt
+for x in 1,2,4,8
+do
+/usr/bin/time -a -o time.log make -j$x 2>&1 | tee result$x.log
 cd output
 echo "print (100-" > a.py
 nl venn_stats.txt | sed -n '10p' | awk '{print $4, ORS=""}' >> a.py
 echo ")" >> a.py
-python a.py > log
-echo -e "The classified sequences occupy \c"
-cat log | awk '{print $0, ORS=""}'
-echo " of total sequences."
-echo -e "The runnig duration of the readscan is \c"
-head -n 1 time.log | awk -F "[user]" '{print $1}'
-echo "seconds."
+python a.py > time$x.log
+echo "readscan with threads $x:" >> result_small_readscan.txt
+echo "accuracy: "
+cat log | awk '{print $0, ORS=""}' >> result_small_readscan.txt
+echo "duration: "
+head -n 1 time$x.log | awk -F "[user]" '{print $1}' >> result_small_readscan.txt
+remove *.log
+remove a.py
+done
+cd ../
+
+cd results/middle_data
+touch ../readscan_results/result_middle_readscan.txt
+for x in 1,2,4,8
+do
+/usr/bin/time -a -o time.log make -j$x 2>&1 | tee result$x.log
+cd output
+echo "print (100-" > a.py
+nl venn_stats.txt | sed -n '10p' | awk '{print $4, ORS=""}' >> a.py
+echo ")" >> a.py
+python a.py > time$x.log
+echo "readscan with threads $x:" >> result_middle_readscan.txt
+echo "accuracy: "
+cat log | awk '{print $0, ORS=""}' >> result_middle_readscan.txt
+echo "duration: "
+head -n 1 time$x.log | awk -F "[user]" '{print $1}' >> result_middle_readscan.txt
+remove *.log
+remove a.py
+done
+cd ../
+
+cd results/large_data
+touch ../readscan_results/result_large_readscan.txt
+for x in 1,2,4,8
+do
+/usr/bin/time -a -o time.log make -j$x 2>&1 | tee result$x.log
+cd output
+echo "print (100-" > a.py
+nl venn_stats.txt | sed -n '10p' | awk '{print $4, ORS=""}' >> a.py
+echo ")" >> a.py
+python a.py > time$x.log
+echo "readscan with threads $x:" >> result_large_readscan.txt
+echo "accuracy: "
+cat log | awk '{print $0, ORS=""}' >> result_large_readscan.txt
+echo "duration: "
+head -n 1 time$x.log | awk -F "[user]" '{print $1}' >> result_large_readscan.txt
+remove *.log
+remove a.py
+done
 cd ../../
-#testing cs-score
+
+
+
+#cs-score
 echo "Using cs-score to detect test.fasta"
 cd cs-score/CSCORE_DISTRIBUTION
 echo "./cscore ./test.fasta" > a.sh
