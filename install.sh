@@ -1,4 +1,6 @@
 #install.sh
+#Install kraken, cs-score and readscan pipeline and process test cases to verify if the installation is right.
+#The input data is chosen from the original simulated files of their own projects.
 
 ##install kraken
 mkdir kraken
