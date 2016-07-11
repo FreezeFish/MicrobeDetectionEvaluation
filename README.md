@@ -11,17 +11,19 @@ Next-generation sequencing is changing research methods in biological sciences a
 2. Network. During the installation, large amount of sequence and annotation database files(>34 Gb) will download from online web server, please make sure your network is available.
 
 ###Download and setup
-1. Run `git clone https://github.com/FreezeFish/MicrobeDetectionEvaluation.git` to download the shell scripts.<br>
-2. Cd MicrobeDetectionEvaluation , chmod +x *.sh, and run ./install.sh to configure the environment.
-3. TODO run test
+1. Run `git clone https://github.com/FreezeFish/MicrobeDetectionEvaluation.git` to download the shell scripts.
+2. Run `cd MicrobeDetectionEvaluation && . ./install.sh` to configure the environment.
+3. Run `. ./run.sh` to start benchmark evaluation.
 
 ## TODO output
+give demo output  
 
 ## TODO Issues (troubleshooting or FAQ or discussion)
+discuss possible errors and how to fix it.
 
 ##Files:
-install.sh: download kraken, readscan and cs-score, install them and run three analysis examples. <br>
-run.sh: download three metagenomics benchmark data, use the pipelines to detect them.
+install.sh: download and install kraken, readscan and cs-score. 
+run.sh: download test data, start computational pipelines to benchmark three methods.
 
 ##Contact
 Any question could be sent to the following e-mail:
