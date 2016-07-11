@@ -22,7 +22,7 @@ give demo output
 discuss possible errors and how to fix it.
 
 ##Files:
-install.sh: download and install kraken, readscan and cs-score. 
+install.sh: download and install kraken, readscan and cs-score. <br>
 run.sh: download test data, start computational pipelines to benchmark three methods.
 
 ##Contact
