@@ -1,6 +1,6 @@
 #Easy Installation and Benchmark of Microbe Detection Computational Methods
 
-Easy installation and benchmark test and evaluation of data analysis methods for microbe detection ([kraken](https://ccb.jhu.edu/software/kraken/), ([readscan](http://cbrc.kaust.edu.sa/readscan/) and ([cs-score](http://metagenomics.atc.tcs.com/preprocessing/cs-score/).
+Easy installation and benchmark test and evaluation of data analysis methods for microbe detection ([kraken](https://ccb.jhu.edu/software/kraken/), [readscan](http://cbrc.kaust.edu.sa/readscan/) and [cs-score](http://metagenomics.atc.tcs.com/preprocessing/cs-score/）.
 ##Desciption
 
 Next-generation sequencing is changing research methods in biological sciences and applications. As one of culture-independent methods  Microbe detection using next-generation sequencing takes advantages of rapid responses to unknown microbes. The large amount of NGS data need fast, flexible and reliable data analysis methods. As widely used analysis methods of microbe detection, we implemented a set of shell scripts for installation and benchmark kraken, readscan and cs-score computational methods automaticlly. 
