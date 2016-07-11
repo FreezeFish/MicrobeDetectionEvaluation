@@ -1,4 +1,4 @@
-#MicrobeDetectionEvaluation
+#Easy Installation and Benchmark of Microbe Detection Computational Methods
 
 Easy installation and benchmark test and evaluation of data analysis methods for microbe detection ([kraken](http://www.baidu.com), readscan and cs-score).
 ##Desciption
