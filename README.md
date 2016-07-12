@@ -16,7 +16,27 @@ Next-generation sequencing is changing research methods in biological sciences a
 3. Run `. ./run.sh` to start benchmark evaluation.
 
 ## TODO output
-give demo output  
+demo output:  
+kraken with threads 1:<br>
+accuracy:<br>
+96.52%<br>
+duration:<br>
+5.01<br>
+kraken with threads 2:<br>
+accuracy:<br>
+96.52%<br>
+duration:<br>
+7.08<br>
+kraken with threads 4:<br>
+accuracy:<br>
+96.52%<br>
+duration:<br>
+10.71<br>
+kraken with threads 8:<br>
+accuracy:<br>
+96.52%<br>
+duration:<br>
+11.4<br>
 
 ## TODO Issues (troubleshooting or FAQ or discussion)
 discuss possible errors and how to fix it.
