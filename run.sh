@@ -24,50 +24,56 @@ gunzip gunzip sra_data.fastq.gz
 mv sra_data.fastq large_data.fastq
 cd ..
 
+
 #Use these pipelines to analyse the benchmark data.
 #kraken
+
 mkdir kraken/kraken_results
 touch kraken/kraken_results/result_kraken_small.txt
 echo "Using kraken to verify small_data.fastq"
-cd kraken/kraken-0.10.5-beta/kraken-software
+cd kraken/kraken-software
 for x in 1 2 4 8
 do 
-  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../../../benchmark/small_data/small_data.fastq  2>&1 | tee result$x.log
+  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../../benchmark/small_data/small_data.fastq  2>&1 | tee result$x.log
 tac result$x.log | sed -n 2p >tail$x.log
-echo "kraken with threads $x:" >> ../../kraken_results/result_kraken_small.txt
-echo "accuracy:" >> ../../kraken_results/result_kraken_small.txt
-cat tail$x.log | awk -F"[()]" '{print $2, ORS=""}'  >> ../../kraken_results/result_kraken_small.txt
-echo "duration:">> ../../kraken_results/result_kraken_small.txt
-head -n 1 time$x.log | awk -F "[user]" '{print $1, ORS=""}' >> ../../kraken_results/result_kraken_small.txt
-remove *.log
+echo "kraken with threads $x:" >> ../kraken_results/result_kraken_small.txt
+echo "accuracy:" >> ../kraken_results/result_kraken_small.txt
+cat tail$x.log | awk -F"[()]" '{print $2}'  >> ../kraken_results/result_kraken_small.txt
+echo "duration:">> ../kraken_results/result_kraken_small.txt
+head -n 1 time$x.log | awk -F "[user]" '{print $1}' >> ../kraken_results/result_kraken_small.txt
+rm *.log
 done
 
+
+touch kraken/kraken_results/result_kraken_middle.txt
 echo "Using kraken to verify middle_data.fastq"
-cd kraken/kraken-0.10.5-beta/kraken-software
+cd kraken/kraken-software
 for x in 1 2 4 8
 do 
-  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../../../benchmark/middle_data/middle_data.fastq  2>&1 | tee result$x.log
+  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../../benchmark/middle_data/middle_data.fastq  2>&1 | tee result$x.log
 tac result$x.log | sed -n 2p >tail$x.log
-echo "kraken with threads $x:" >> ../../kraken_results/result_kraken_middle.txt
-echo "accuracy:" >> ../../kraken_results/result_kraken_middle.txt
-cat tail$x.log | awk -F"[()]" '{print $2, ORS=""}'  >> ../../kraken_results/result_kraken_middle.txt
-echo "duration:">> ../../kraken_results/result_kraken_middle.txt
-head -n 1 time$x.log | awk -F "[user]" '{print $1, ORS=""}' >> ../../kraken_results/result_kraken_middle.txt
-remove *.log
+echo "kraken with threads $x:" >> ../kraken_results/result_kraken_middle.txt
+echo "accuracy:" >> ../kraken_results/result_kraken_middle.txt
+cat tail$x.log | awk -F"[()]" '{print $2}'  >> ../kraken_results/result_kraken_middle.txt
+echo "duration:">> ../kraken_results/result_kraken_small.txt
+head -n 1 time$x.log | awk -F "[user]" '{print $1}' >> ../kraken_results/result_kraken_middle.txt
+rm *.log
 done
 
+
+touch kraken/kraken_results/result_kraken_large.txt
 echo "Using kraken to verify large_data.fastq"
-cd kraken/kraken-0.10.5-beta/kraken-software
+cd kraken/kraken-software
 for x in 1 2 4 8
 do 
-  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../../../benchmark/large_data/large_data.fastq  2>&1 | tee result$x.log
+  /usr/bin/time -a -o time$x.log ./kraken --db ../minikraken_20141208 --threads $x ../../benchmark/large_data/large_data.fastq  2>&1 | tee result$x.log
 tac result$x.log | sed -n 2p >tail$x.log
-echo "kraken with threads $x:" >> ../../kraken_results/result_kraken_large.txt
-echo "accuracy:" >> ../../kraken_results/result_kraken_large.txt
-cat tail$x.log | awk -F"[()]" '{print $2, ORS=""}'  >> ../../kraken_results/result_kraken_large.txt
-echo "duration:">> ../../kraken_results/result_kraken_large.txt
-head -n 1 time$x.log | awk -F "[user]" '{print $1, ORS=""}' >> ../../kraken_results/result_kraken_large.txt
-remove *.log
+echo "kraken with threads $x:" >> ../kraken_results/result_kraken_large.txt
+echo "accuracy:" >> ../kraken_results/result_kraken_large.txt
+cat tail$x.log | awk -F"[()]" '{print $2}'  >> ../kraken_results/result_kraken_large.txt
+echo "duration:">> ../kraken_results/result_kraken_large.txt
+head -n 1 time$x.log | awk -F "[user]" '{print $1}' >> ../kraken_results/result_kraken_large.txt
+rm *.log
 done
 
 echo "Kraken analysis completed."
@@ -75,10 +81,13 @@ cd ../../../
 
 
 
+
 #readscan
 echo "Using readscan to detect small_data.fastq"
-cd readscan
+cd readscan/readscan
 . ./env.sh
+cd ..
+mkdir results
 readscan_makeflow.pl index -k 13 -s 13 human_genome.fasta
 readscan_makeflow.pl index -k 13 -s 6 microbes.fasta
 readscan_makeflow.pl search -h human_genome -p microbes -r results -T taxon ../benchmark/small_data/small_data.fastq
@@ -86,146 +95,124 @@ readscan_makeflow.pl search -h human_genome -p microbes -r results -T taxon ../b
 mkdir readscan_results
 
 cd results/small_data
-touch ../readscan_results/result_small_readscan.txt
-for x in 1,2,4,8
-do
-/usr/bin/time -a -o time.log make -j$x 2>&1 | tee result$x.log
+touch ../../readscan_results/result_small_readscan.txt
+/usr/bin/time -a -o time.log make -j2
 cd output
 echo "print (100-" > a.py
 nl venn_stats.txt | sed -n '10p' | awk '{print $4, ORS=""}' >> a.py
 echo ")" >> a.py
-python a.py > time$x.log
-echo "readscan with threads $x:" >> result_small_readscan.txt
-echo "accuracy: "
-cat log | awk '{print $0, ORS=""}' >> result_small_readscan.txt
-echo "duration: "
-head -n 1 time$x.log | awk -F "[user]" '{print $1}' >> result_small_readscan.txt
-remove *.log
-remove a.py
-done
+python a.py > accuracy.log
+echo "readscan results:" >> ../../../readscan_results/result_small_readscan.txt
+echo "accuracy: "  >> ../../../readscan_results/result_small_readscan.txt
+cat accuracy.log | awk '{print $0}' >> ../../../readscan_results/result_small_readscan.txt
+echo "duration: " >> ../../../readscan_results/result_small_readscan.txt
+head -n 1 ../time.log | awk -F "[user]" '{print $1}' >> ../../../readscan_results/result_small_readscan.txt
+rm *.log
+rm a.py
 cd ../
 
 readscan_makeflow.pl search -h human_genome -p microbes -r results -T taxon ../benchmark/middle_data/middle_data.fastq
+
 cd results/middle_data
-touch ../readscan_results/result_middle_readscan.txt
-for x in 1,2,4,8
-do
-/usr/bin/time -a -o time.log make -j$x 2>&1 | tee result$x.log
+touch ../../readscan_results/result_middle_readscan.txt
+/usr/bin/time -a -o time.log make -j2
 cd output
 echo "print (100-" > a.py
 nl venn_stats.txt | sed -n '10p' | awk '{print $4, ORS=""}' >> a.py
 echo ")" >> a.py
-python a.py > time$x.log
-echo "readscan with threads $x:" >> result_middle_readscan.txt
-echo "accuracy: "
-cat log | awk '{print $0, ORS=""}' >> result_middle_readscan.txt
-echo "duration: "
-head -n 1 time$x.log | awk -F "[user]" '{print $1}' >> result_middle_readscan.txt
-remove *.log
-remove a.py
-done
+python a.py > accuracy.log
+echo "readscan results:" >> ../../../readscan_results/result_middle_readscan.txt
+echo "accuracy: "  >> ../../../readscan_results/result_middle_readscan.txt
+cat accuracy.log | awk '{print $0}' >> ../../../readscan_results/result_middle_readscan.txt
+echo "duration: " >> ../../../readscan_results/result_middle_readscan.txt
+head -n 1 ../time.log | awk -F "[user]" '{print $1}' >> ../../../readscan_results/result_middle_readscan.txt
+rm *.log
+rm a.py
 cd ../
 
 readscan_makeflow.pl search -h human_genome -p microbes -r results -T taxon ../benchmark/large_data/large_data.fastq
+
 cd results/large_data
-touch ../readscan_results/result_large_readscan.txt
-for x in 1,2,4,8
-do
-/usr/bin/time -a -o time.log make -j$x 2>&1 | tee result$x.log
+touch ../../readscan_results/result_large_readscan.txt
+/usr/bin/time -a -o time.log make -j2
 cd output
 echo "print (100-" > a.py
 nl venn_stats.txt | sed -n '10p' | awk '{print $4, ORS=""}' >> a.py
 echo ")" >> a.py
-python a.py > time$x.log
-echo "readscan with threads $x:" >> result_large_readscan.txt
-echo "accuracy: "
-cat log | awk '{print $0, ORS=""}' >> result_large_readscan.txt
-echo "duration: "
-head -n 1 time$x.log | awk -F "[user]" '{print $1}' >> result_large_readscan.txt
-remove *.log
-remove a.py
-done
-cd ../../
-
+python a.py > accuracy.log
+echo "readscan results:" >> ../../../readscan_results/result_large_readscan.txt
+echo "accuracy: "  >> ../../../readscan_results/result_large_readscan.txt
+cat accuracy.log | awk '{print $0}' >> ../../../readscan_results/result_large_readscan.txt
+echo "duration: " >> ../../../readscan_results/result_large_readscan.txt
+head -n 1 ../time.log | awk -F "[user]" '{print $1}' >> ../../../readscan_results/result_large_readscan.txt
+rm *.log
+rm a.py
+cd ../
 
 
 #cs-score
 #cs-score doesn't apply multi-threads work pattern.
 cd cs-score/CSCORE_DISTRIBUTION
-echo "./cscore ../../benchmark/small_data/small_data.fastq" > a.sh
-echo "INVALID: "
-echo "grep -o INVALID ../../benchmark/small_data/small_data.fastq.assign | wc -l " >> a.sh
-echo "HUMAN: "
-echo "grep -o HUMAN ../../benchmark/small_data/small_data.fastq.assign | wc -l "
-echo "PROKARYOTE: "
-echo "grep -o PROKARYOTE ../../benchmark/small_data/small_data.fastq.fasta.assign | wc -l "
-echo "wc -l ../../benchmark/small_data/small_data.fastq.assign" >> a.sh
-chmod +x a.sh
-/usr/bin/time -a -o time.log ./a.sh 2>&1 | tee result.log
-echo "print("100* > a.py
-tac result.log | sed -n 2p | awk '{print $1, ORS = ""}'>> a.py
-echo -e "/\c" >> a.py
-tac result.log | sed -n 1p | awk -F "[test]" '{print $1, ORS = ""}' >> a.py
-echo -e ")\c" >> a.py
-python a.py > result.log
-echo "%" >> result.log
-echo "cs-score: large_data.fastq" > cs-score_small_data.txt
+rm a.py
+/usr/bin/time -a -o time.log ./cscore ../../benchmark/small_data/small_data.fastq
+#echo "grep -o HUMAN ../../benchmark/small_data/small_data.fastq.assign | wc -l "
+#echo "grep -o PROKARYOTE ../../benchmark/small_data/small_data.fastq.fasta.assign | wc -l "
+#echo "wc -l ../../benchmark/small_data/small_data.fastq.assign" >> a.sh
+#chmod +x a.sh
+#/usr/bin/time -a -o time.log ./a.sh 2>&1 | tee result.log
+echo "print(100*(1-" > a.py
+grep -o INVALID ../../benchmark/small_data/small_data.fastq.assign | wc -l | awk '{print $1, ORS=""}'>> a.py
+echo -e "/" >> a.py
+wc -l ../../benchmark/small_data/small_data.fastq.assign | awk '{print $1, ORS=""}'>> a.py
+echo -e "))\c" >> a.py
+python a.py > result1.log
+echo "%" >> result1.log
+echo "cs-score: small_data.fastq" > cs-score_small_data.txt
 echo "accuracy:" >> cs-score_small_data.txt
-cat result.log | awk  '{print $1, ORS=""}' >> cs-score_small_data.txt
+cat result1.log | awk  '{print $1, ORS=""}' >> cs-score_small_data.txt
 echo "duration:" >> cs-score_small_data.txt
 head -n 1 time.log | awk -F "[user]" '{print $1, ORS=""}' >> cs-score_small_data.txt
-remove *.log
-remove a.py
+rm *.log
+rm a.py
 
-echo "./cscore ../../benchmark/middle_data/middle_data.fastq" > a.sh
-echo "INVALID: "
-echo "grep -o INVALID ../../benchmark/middle_data/middle_data.fastq.assign | wc -l " >> a.sh
-echo "HUMAN: "
-echo "grep -o HUMAN ../../benchmark/middle_data/middle_data.fastq.assign | wc -l "
-echo "PROKARYOTE: "
-echo "grep -o PROKARYOTE ../../benchmark/middle_data/middle_data.fastq.fasta.assign | wc -l "
-echo "wc -l ../../benchmark/middle_data/middle_data.fastq.assign" >> a.sh
-chmod +x a.sh
-/usr/bin/time -a -o time.log ./a.sh 2>&1 | tee result.log
-echo "print("100* > a.py
-tac result.log | sed -n 2p | awk '{print $1, ORS = ""}'>> a.py
-echo -e "/\c" >> a.py
-tac result.log | sed -n 1p | awk -F "[test]" '{print $1, ORS = ""}' >> a.py
-echo -e ")\c" >> a.py
-python a.py > result.log
-echo "%" >> result.log
-echo "cs-score: large_data.fastq" > cs-score_middle_data.txt
-echo "accuracy:" >> cs-score_middle_data.txt
-cat result.log | awk  '{print $1, ORS=""}' >> cs-score_middle_data.txt
+cd cs-score/CSCORE_DISTRIBUTION
+rm a.py
+/usr/bin/time -a -o time.log ./cscore ../../benchmark/middle_data/middle_data.fastq
+echo "print(100*(1-" > a.py
+grep -o INVALID ../../benchmark/middle_data/middle_data.fastq.assign | wc -l | awk '{print $1, ORS=""}'>> a.py
+echo -e "/" >> a.py
+wc -l ../../benchmark/middle_data/middle_data.fastq.assign | awk '{print $1, ORS=""}'>> a.py
+echo -e "))\c" >> a.py
+python a.py > result1.log
+echo "%" >> result1.log
+echo "cs-score: middle_data.fastq" > cs-score_middle_data.txt
+echo "accuracy:" >> cs-score_small_data.txt
+cat result1.log | awk  '{print $1, ORS=""}' >> cs-score_middle_data.txt
 echo "duration:" >> cs-score_middle_data.txt
 head -n 1 time.log | awk -F "[user]" '{print $1, ORS=""}' >> cs-score_middle_data.txt
-remove *.log
-remove a.py
+rm *.log
+rm a.py
 
-echo "./cscore ../../benchmark/large_data/large_data.fastq" > a.sh
-echo "INVALID: "
-echo "grep -o INVALID ../../benchmark/large_data/large_data.fastq.assign | wc -l " >> a.sh
-echo "HUMAN: "
-echo "grep -o HUMAN ../../benchmark/large_data/large_data.fastq.assign | wc -l "
-echo "PROKARYOTE: "
-echo "grep -o PROKARYOTE ../../benchmark/large_data/large_data.fastq.fasta.assign | wc -l "
-echo "wc -l ../../benchmark/large_data/large_data.fastq.assign" >> a.sh
-chmod +x a.sh
-/usr/bin/time -a -o time.log ./a.sh 2>&1 | tee result.log
-echo "print("100* > a.py
-tac result.log | sed -n 2p | awk '{print $1, ORS = ""}'>> a.py
-echo -e "/\c" >> a.py
-tac result.log | sed -n 1p | awk -F "[test]" '{print $1, ORS = ""}' >> a.py
-echo -e ")\c" >> a.py
-python a.py > result.log
-echo "%" >> result.log
-echo "cs-score: large_data.fastq"> cs-score_large_data.txt
-echo "accuracy:">> cs-score_large_data.txt
-cat result.log | awk  '{print $1, ORS=""}'>> cs-score_large_data.txt
-echo "duration:">> cs-score_large_data.txt
-head -n 1 time.log | awk -F "[user]" '{print $1, ORS=""}'>> cs-score_large_data.txt
-remove *.log
-remove a.py
+cd cs-score/CSCORE_DISTRIBUTION
+rm a.py
+/usr/bin/time -a -o time.log ./cscore ../../benchmark/large_data/large_data.fastq
+echo "print(100*(1-" > a.py
+grep -o INVALID ../../benchmark/large_data/large_data.fastq.assign | wc -l | awk '{print $1, ORS=""}'>> a.py
+echo -e "/" >> a.py
+wc -l ../../benchmark/large_data/large_data.fastq.assign | awk '{print $1, ORS=""}'>> a.py
+echo -e "))\c" >> a.py
+python a.py > result1.log
+echo "%" >> result1.log
+echo "cs-score: large_data.fastq" > cs-score_large_data.txt
+echo "accuracy:" >> cs-score_large_data.txt
+cat result1.log | awk  '{print $1, ORS=""}' >> cs-score_large_data.txt
+echo "duration:" >> cs-score_large_data.txt
+head -n 1 time.log | awk -F "[user]" '{print $1, ORS=""}' >> cs-score_large_data.txt
+rm *.log
+rm a.py
+
 cd ../../
 
 #Finish the runs
+
+
