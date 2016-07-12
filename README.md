@@ -40,10 +40,14 @@ duration:<br>
 
 ## TODO Issues (troubleshooting or FAQ or discussion)
 discuss possible errors and how to fix it.
+1.Readscan software cannot deal with fasta files.
+2.CS-SCORE core dumped, faststop. Use fq2fa to convert the fastq file into fasta, then use CS-SCORE
+3.
 
 ##Files:
 install.sh: download and install kraken, readscan and cs-score. <br>
-run.sh: download test data, start computational pipelines to benchmark three methods.
+run.sh: download test data, start computational pipelines to benchmark three methods.<br>
+fq2fa: executable file to convert fastq files into fasta file. Usage: fq2fa *.fastq *.fasta
 
 ##Contact
 Any question could be sent to the following e-mail:
