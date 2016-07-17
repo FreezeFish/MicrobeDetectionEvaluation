@@ -39,9 +39,9 @@ duration:<br>
 11.4<br>
 
 ## TODO Issues (troubleshooting or FAQ or discussion)
-discuss possible errors and how to fix it.
-1.Readscan software cannot deal with fasta files.
-2.CS-SCORE core dumped, faststop. Use fq2fa to convert the fastq file into fasta, then use CS-SCORE
+discuss possible errors and how to fix it.<br>
+1.Readscan software cannot deal with fasta files.<br>
+2.CS-SCORE core dumped, faststop. Use fq2fa to convert the fastq file into fasta, then use CS-SCORE.<br>
 3.
 
 ##Files:
